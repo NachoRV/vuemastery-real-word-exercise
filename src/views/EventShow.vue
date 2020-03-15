@@ -24,24 +24,21 @@
   </div>
 </template>
 <script>
-import EventServices from "@/services/EventServices.js";
-
+import { mapState, mapActions } from 'vuex'
 export default {
   props: ["id"],
   data() {
     return {
-      event: {}
+     
     };
   },
   created() {
-    EventServices.getEvent(this.id)
-      .then(response => {
-        this.event = response.data;
-      })
-      .catch(error => {
-        console.log(`Error en llamada ${error.response}`);
-      });
-  }
+    this.fetchEvent(this.id)
+  },
+  computed: mapState({
+    event: state => state.event.event
+  }),
+  methods: mapActions('event', ['fetchEvent'])
 };
 </script>
     <style scoped>

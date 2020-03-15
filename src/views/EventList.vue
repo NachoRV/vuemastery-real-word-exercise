@@ -1,33 +1,37 @@
 <template>
   <div>
-    <p>En list event</p>
-    <EventCard v-for="event in events" :key="event.id" :event="event"/>
-    <BaseIcon/>
+    <h1>Event for {{ user.user.name}}</h1>
+    <EventCard v-for="event in event.events" :key="event.id" :event="event" />
+    <template v-if="page != 1">
+      <router-link :to="{ name: 'EventList', query: { page: page - 1 } }" rel="prev">Prev Page</router-link>|
+    </template>
+    <router-link :to="{ name: 'EventList', query: { page: page + 1 } }">Next Page</router-link>
   </div>
 </template>
 <script>
-import EventCard from '@/components/EventCard.vue';
-import EventService from '@/services/EventServices.js'
-  export default {
-    components: {
-      EventCard,
+import EventCard from "@/components/EventCard.vue";
+import { mapState } from "vuex";
+
+export default {
+  components: {
+    EventCard
+  },
+
+  beforeCreate () {
+    this.$store.dispatch("event/fetchEvents", {
+      perPage: 3, // <-- How many items to display per page
+      page: this.page // <-- What page we're on
+    });
+  },
+  computed: {
+    page() {
+      // What page we're currently on
+      return parseInt(this.$route.query.page) || 1;
     },
-    data() {
-      return {
-        events: []
-       
-      }
-    },
-    created () {
-      EventService.getEvents()
-      .then(response => {
-        this.events = response.data
-      })
-      .catch( error => {
-        console.log(`error en la llamda ${error}`)
-      })
-      
-    },
-    
+     hasNextPage() {
+          return this.event.eventsTotal > this.page * this.perPage
+        },
+     ...mapState(['event', 'user'])
   }
+};
 </script>

@@ -2,14 +2,13 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import EventList from "../views/EventList.vue";
 
-
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
     name: "EventList",
-    component: EventList,
+    component: EventList
   },
   {
     path: "/event-create",
